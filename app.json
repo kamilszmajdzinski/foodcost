@@ -7,8 +7,8 @@
     "orientation": "portrait",
     "icon": "./src/assets/images/app-icon.png",
     "splash": {
-      "image": "./src/assets/images/splash.png",
-      "backgroundColor": "#222"
+      "image": "./src/assets/images/Foodcost.gif",
+      "backgroundColor": "#F1E4C3"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
@@ -17,7 +17,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/images/app-icon.png",
-        "backgroundColor": "#222"
+        "backgroundColor": "#F1E4C3"
       },
       "package": "com.haytherecharlie.foodcost"
     },

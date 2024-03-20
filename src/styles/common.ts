@@ -13,6 +13,12 @@ export const Common = {
     font-family: dmSerif;
     font-weight: bold;
   `,
+  PageDescription: styled.Text`
+   font-size: ${(p) => p.theme.size(18, 'px')};
+   color: ${(p) => p.theme.secondary};
+   font-family: dmSerif;
+   font-weight: normal;
+ `,
   Button: styled.TouchableOpacity`
     border-radius: 16px;
     font-family: dmSerif;

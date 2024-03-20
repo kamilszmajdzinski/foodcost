@@ -16,9 +16,9 @@ export default function HomeScreen() {
     <ScreenLayout testID="home-screen-layout">
       <Common.PageWrapper>
         <Stack.Screen options={{ title: 'Home Screen' }} />
-        <Common.PageHeader>Foodcost</Common.PageHeader>
+        <Common.PageHeader>FoodCost</Common.PageHeader>
         <S.Content>
-          <Card rotate name="My foodcosts" icon={faListOl} />
+          <Card rotate name="My foodcosts" icon={faListOl} handlePress={() => router.push('/foodcosts')}/>
           <Card name="My products" icon={faLemon} handlePress={() => router.push('/products')} />
         </S.Content>
       </Common.PageWrapper>
