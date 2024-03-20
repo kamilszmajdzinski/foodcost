@@ -77,7 +77,7 @@ const ProductsScreen = () => {
             />
           </S.ListWrapper>
         )}
-        <AddButton href="/products/addProduct" />
+        <AddButton href="/foodcosts/addFoodcost" />
       </Common.PageWrapper>
     </ScreenLayout>
   )
@@ -105,18 +105,17 @@ const S = {
   ListElementLeftColumn: styled.View`
     display: flex;
     flex-direction: column;
+    width: 80%;
   `,
   ListElementTitle: styled.Text`
     font-family: dmSerif;
     font-size: 30px;
-    width: 80%;
     color: ${(p) => p.theme.highlight};
   `,
   ListElementDescription: styled.Text`
     font-family: dmSerif;
     font-size: 20px;
     color: ${(p) => p.theme.secondary};
-    width: 80%;
   `,
   ListDetails: styled.Text`
     font-family: dmSerif;
