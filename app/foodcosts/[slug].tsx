@@ -16,6 +16,7 @@ import Error from 'src/components/Error'
 import { Common } from 'src/styles/common'
 
 import { FoodcostDTO, ProductDTO } from 'src/types/supabase'
+import { formatPrice } from 'src/utils/formatPrice'
 
 const ProductsScreen = () => {
   const [isLoading, setIsLoading] = useState(true)
@@ -64,7 +65,7 @@ const ProductsScreen = () => {
                   <S.ListElement>
                     <S.ListElementLeftColumn>
                       <S.ListElementTitle>{capitalizeFirstLetter(product.item.product_name)}</S.ListElementTitle>
-                      <S.ListElementDescription>{product.item.price}zł / {product.item.base_unit}</S.ListElementDescription>
+                      <S.ListElementDescription>{formatPrice(product.item.price)}zł / {product.item.base_unit}</S.ListElementDescription>
                     </S.ListElementLeftColumn>
                     <S.ListElementRightColumn>
                     <S.Price>
@@ -72,7 +73,7 @@ const ProductsScreen = () => {
                         <S.PriceCurrency>{product.item.unit}</S.PriceCurrency>
                       </S.Price>
                       <S.Price>
-                        {product.item.price}
+                        {formatPrice(product.item.price)}
                         <S.PriceCurrency>zł</S.PriceCurrency>
                       </S.Price>
                     </S.ListElementRightColumn>

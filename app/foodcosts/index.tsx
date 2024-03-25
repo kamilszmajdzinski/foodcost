@@ -16,6 +16,7 @@ import Error from 'src/components/Error'
 import { Common } from 'src/styles/common'
 
 import { Foodcost } from 'src/types/supabase'
+import { formatPrice } from 'src/utils/formatPrice'
 
 const ProductsScreen = () => {
   const [isLoading, setIsLoading] = useState(true)
@@ -66,7 +67,7 @@ const ProductsScreen = () => {
                   </S.ListElementLeftColumn>
                   <S.ListElementRightColumn>
                     <S.Price>
-                      {foodcost.item.foodcost}
+                      {formatPrice(foodcost.item.foodcost)}
                       <S.PriceCurrency>zł</S.PriceCurrency>
                     </S.Price>
                   </S.ListElementRightColumn>

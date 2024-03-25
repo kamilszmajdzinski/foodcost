@@ -1,5 +1,8 @@
+import React from 'react'
 import { ActivityIndicator } from 'react-native'
 import styled from 'styled-components/native'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { IconProp } from '@fortawesome/fontawesome-svg-core'
 
 export const ButtonStyles = {
   Wrapper: styled.TouchableOpacity<{ isGrayedOut: boolean }>`
@@ -13,12 +16,21 @@ export const ButtonStyles = {
     font-size: 24px;
     color: white;
     text-align: center;
+  `,
+  ButtonIcon: styled(FontAwesomeIcon)<{ color?: string }>`
+    color: ${(p) => p.color || p.theme.highlight};
+    height: 100%;
+    width: 100%;
+  `,
+  ButtonIconWrapper: styled.TouchableOpacity`
+    padding: 12px;
+    padding: 4px;
   `
 }
 
 const LoadingSpinner = () => (
   <ButtonStyles.Text>
-    Loading... &nbsp; <ActivityIndicator color='#FFFFFF' />{' '}
+    Loading... &nbsp; <ActivityIndicator color="#FFFFFF" />{' '}
   </ButtonStyles.Text>
 )
 
@@ -36,4 +48,22 @@ export const Button = ({
   <ButtonStyles.Wrapper onPress={onPress} disabled={disabled} isGrayedOut={disabled}>
     {isLoading ? <LoadingSpinner /> : <ButtonStyles.Text>{children}</ButtonStyles.Text>}
   </ButtonStyles.Wrapper>
+)
+
+export const IconButton = ({
+  icon,
+  onPress,
+  disabled,
+  isLoading,
+  color
+}: {
+  icon: IconProp
+  onPress: () => void
+  disabled: boolean
+  isLoading: boolean
+  color?: string
+}) => (
+  <ButtonStyles.ButtonIconWrapper onPress={onPress} disabled={disabled}>
+    {isLoading ? <LoadingSpinner /> : <ButtonStyles.ButtonIcon icon={icon} color={color} />}
+  </ButtonStyles.ButtonIconWrapper>
 )

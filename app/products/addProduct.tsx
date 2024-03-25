@@ -9,16 +9,9 @@ import { mapFormToApi } from 'src/utils/mapFormToApi'
 import ScreenLayout from 'src/components/ScreenLayout'
 import styled from 'styled-components/native'
 import { Button } from 'src/components/Button/Button'
+import { UNITS } from 'src/consts'
 
 import { Common } from 'src/styles/common'
-
-const UNITS = [
-  { value: 'g', label: 'Grams' },
-  { value: 'kg', label: 'Kilograms' },
-  { value: 'mg', label: 'Miligrams' },
-  { value: 'l', label: 'Liters' },
-  { value: 'ml', label: 'Mililiters' },
-]
 
 const AddProduct = () => {
   const [isLoading, setIsLoading] = useState(false)

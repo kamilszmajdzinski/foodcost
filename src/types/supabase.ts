@@ -33,3 +33,18 @@ export interface ProductDTO {
   unit: string
   weight: number
 }
+
+export interface ProductFoodcostDTO {
+  product_id: number;
+  weight: number;
+  unit: string;
+}
+
+export interface AddFoodcostDTO {
+  name: string
+  description: string
+  servings_number: number
+  foodcost: number
+  serving_foodcost: number
+  products: ProductFoodcostDTO[]
+}

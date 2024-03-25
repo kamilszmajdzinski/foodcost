@@ -15,12 +15,14 @@ import Error from 'src/components/Error'
 import { Common } from 'src/styles/common'
 
 import { Product } from 'src/types/supabase'
+import { formatPrice } from 'src/utils/formatPrice'
 
 const ProductsScreen = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
   const [products, setProducts] = useState<Product[]>([])
 
+  console.log(products)
   const isFocused = useIsFocused()
 
   const getProducts = async () => {
@@ -58,7 +60,7 @@ const ProductsScreen = () => {
                 <S.ListElement>
                   <S.ListText>{capitalizeFirstLetter(product.item.name)}</S.ListText>
                   <S.ListDetails>
-                    {product.item.price}zł/{product.item.unit}
+                    {formatPrice(product.item.price)}zł/{product.item.unit}
                   </S.ListDetails>
                 </S.ListElement>
               )}
