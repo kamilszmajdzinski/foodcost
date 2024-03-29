@@ -36,16 +36,16 @@ export interface ProductDTO {
 }
 
 export interface ProductFoodcostDTO {
-  product_id: number;
-  weight: number;
-  unit: string;
+  product_id: string
+  weight: number
+  price: number
+  unit: string
 }
 
 export interface AddFoodcostDTO {
   name: string
   description: string
-  servings_number: number
+  servings: number
   foodcost: number
-  serving_foodcost: number
   products: ProductFoodcostDTO[]
 }
