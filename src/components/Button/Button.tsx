@@ -59,8 +59,8 @@ export const IconButton = ({
 }: {
   icon: IconProp
   onPress: () => void
-  disabled: boolean
-  isLoading: boolean
+  disabled?: boolean
+  isLoading?: boolean
   color?: string
 }) => (
   <ButtonStyles.ButtonIconWrapper onPress={onPress} disabled={disabled}>

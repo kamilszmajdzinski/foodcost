@@ -1,6 +1,6 @@
 import { Stack } from 'expo-router'
 import ScreenLayout from 'src/components/ScreenLayout'
-import { FlatList } from 'react-native'
+import { FlatList, Text } from 'react-native'
 import { useEffect, useState } from 'react'
 import { useIsFocused } from '@react-navigation/native'
 import styled from 'styled-components/native'
@@ -17,6 +17,7 @@ import { Common } from 'src/styles/common'
 
 import { FoodcostDTO, ProductDTO } from 'src/types/supabase'
 import { formatPrice } from 'src/utils/formatPrice'
+import { Typography } from 'src/components/Typography'
 
 const ProductsScreen = () => {
   const [isLoading, setIsLoading] = useState(true)
@@ -50,6 +51,8 @@ const ProductsScreen = () => {
     }
   }, [isFocused])
 
+  console.log(foodcost)
+
   return (
     <ScreenLayout>
       <Common.PageWrapper>
@@ -65,10 +68,12 @@ const ProductsScreen = () => {
                   <S.ListElement>
                     <S.ListElementLeftColumn>
                       <S.ListElementTitle>{capitalizeFirstLetter(product.item.product_name)}</S.ListElementTitle>
-                      <S.ListElementDescription>{formatPrice(product.item.price)}zł / {product.item.base_unit}</S.ListElementDescription>
+                      <S.ListElementDescription>
+                        {formatPrice(product.item.base_price)}zł / {product.item.base_unit}
+                      </S.ListElementDescription>
                     </S.ListElementLeftColumn>
                     <S.ListElementRightColumn>
-                    <S.Price>
+                      <S.Price>
                         {product.item.weight}
                         <S.PriceCurrency>{product.item.unit}</S.PriceCurrency>
                       </S.Price>
@@ -84,6 +89,20 @@ const ProductsScreen = () => {
               />
             </S.ListWrapper>
           </S.InnerPageWrapper>
+        )}
+        {foodcost && (
+          <S.PageFooterWrapper>
+            <S.PageFooterRow>
+              <Typography size={32}>Foodcost:</Typography>
+              <Typography size={48}>{formatPrice(foodcost.foodcost)} zł</Typography>
+            </S.PageFooterRow>
+            <S.PageFooterRow>
+              <Typography size={18}>Servings / foodcost per serving</Typography>
+              <Typography size={18}>
+                {foodcost.servings_number} / {formatPrice(foodcost.foodcost / foodcost.servings_number)} zł
+              </Typography>
+            </S.PageFooterRow>
+          </S.PageFooterWrapper>
         )}
       </Common.PageWrapper>
     </ScreenLayout>
@@ -146,6 +165,17 @@ const S = {
 
   InnerPageWrapper: styled.View`
     flex: 1;
+  `,
+  PageFooterWrapper: styled.View`
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  `,
+  PageFooterRow: styled.View`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
   `
 }
 

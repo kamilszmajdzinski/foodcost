@@ -27,6 +27,7 @@ export interface FoodcostDTO {
 
 export interface ProductDTO {
   base_unit: string
+  base_price: number
   price: number
   product_id: number
   product_name: string

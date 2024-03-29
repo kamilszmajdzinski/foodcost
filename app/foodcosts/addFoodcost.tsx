@@ -1,5 +1,5 @@
 import { Stack } from 'expo-router'
-import { ScrollView } from 'react-native'
+import { ScrollView, View } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import { useEffect, useState } from 'react'
 import SelectDropdown from 'react-native-select-dropdown'
@@ -18,8 +18,10 @@ import { formatPrice } from 'src/utils/formatPrice'
 import { UNITS } from 'src/consts'
 import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark'
-import { faPenToSquare } from '@fortawesome/free-solid-svg-icons/faPenToSquare'
 import { capitalizeFirstLetter } from 'src/utils/capitalizeFirstLetter'
+import { router } from 'expo-router'
+
+import { ProductRow } from 'src/domains/addFoodcost/ProductRow'
 
 const mapStateToApi = (name, description, foodcostProducts, foodcost, servings) => ({
   name,
@@ -44,9 +46,12 @@ type FoodcostProduct = {
   basePrice: number
 }
 
-async function addFoodCostWithProducts(foodCost) {
-  // Start by adding the recipe
-  const { data: recipe, error: recipeError } = await supabase
+async function addFoodCostWithProducts(foodCost, onSuccess) {
+  const {
+    data: recipe,
+    error: recipeError,
+    status: recipesTableInsertStatus
+  } = await supabase
     .from('recipes')
     .insert({
       name: foodCost.name,
@@ -57,15 +62,12 @@ async function addFoodCostWithProducts(foodCost) {
     })
     .select('*')
 
-  console.log(recipe)
-
   if (recipeError) {
     console.error('Error inserting recipe:', recipeError)
     return
   }
 
-  // If the recipe was inserted successfully, add its products
-  const recipeId = recipe[0].id // Assuming the insert returns the recipe, and taking the first.
+  const recipeId = recipe[0].id
 
   const productInserts = foodCost.products.map((product) => ({
     recipe_id: recipeId,
@@ -75,12 +77,16 @@ async function addFoodCostWithProducts(foodCost) {
     unit: product.unit
   }))
 
-  let { error: productsError } = await supabase.from('recipe_products').insert(productInserts)
+  const { error: productsError, status: recipeProductsTableInsertStatus } = await supabase.from('recipe_products').insert(productInserts)
 
   if (productsError) {
     console.error('Error inserting products:', productsError)
     // Optionally, handle rollback or cleanup here
     return
+  }
+
+  if (recipeProductsTableInsertStatus && recipeProductsTableInsertStatus === 201 && recipesTableInsertStatus && recipesTableInsertStatus === 201) {
+    onSuccess && onSuccess()
   }
 
   console.log('Food cost and products added successfully')
@@ -105,7 +111,9 @@ const AddFoodcost = () => {
   const isFocused = useIsFocused()
 
   const addFoodcost = () => {
-    addFoodCostWithProducts(mapStateToApi(name, description, foodcostProducts, foodcost, servings))
+    addFoodCostWithProducts(mapStateToApi(name, description, foodcostProducts, foodcost, servings), () => {
+      router.back()
+    })
   }
 
   useEffect(() => {
@@ -115,7 +123,7 @@ const AddFoodcost = () => {
     } else setFoodcost(null)
   }, [foodcostProducts])
 
-  const submitEnabled = name
+  const submitEnabled = name && description && servings && servings > 0
 
   const getProducts = async () => {
     setIsLoading(true)
@@ -138,13 +146,6 @@ const AddFoodcost = () => {
     }
   }, [isFocused])
 
-  const handleProductConfirmation = () => {
-    if (selectedProduct) {
-      setFoodcostProducts([...foodcostProducts, selectedProduct])
-      setSelectedProduct(null)
-    }
-  }
-
   const handleSelectPress = (item: Product) =>
     setSelectedProduct({
       product_id: item.id,
@@ -163,14 +164,22 @@ const AddFoodcost = () => {
           <Stack.Screen options={{ title: 'Add Foodcost' }} />
           <Common.PageHeader>Add Foodcost</Common.PageHeader>
 
-          <S.NameInputWrapper>
-            <S.InputLabel>Name:</S.InputLabel>
-            <S.Input value={name} onChangeText={(text) => setName(text)} />
-          </S.NameInputWrapper>
-          <S.NameInputWrapper>
+          <S.LabelAndInputWrapper>
+            <S.FlexWrapper flex={3}>
+              <S.InputLabel>Name:</S.InputLabel>
+              <S.Input value={name} onChangeText={(text) => setName(text)} />
+            </S.FlexWrapper>
+
+            <S.FlexWrapper flex={2}>
+              <S.InputLabel>Servings:</S.InputLabel>
+              <S.Input keyboardType="numeric" value={servings?.toString()} onChangeText={(serving) => setServings(Number(serving))} />
+            </S.FlexWrapper>
+          </S.LabelAndInputWrapper>
+
+          <S.LabelAndInputWrapper>
             <S.InputLabel>Description:</S.InputLabel>
             <S.Input value={description} onChangeText={(text) => setDescription(text)} />
-          </S.NameInputWrapper>
+          </S.LabelAndInputWrapper>
           <S.ProductsWrapper>
             <S.Label size={30}>Products:</S.Label>
             {foodcostProducts.map((foodcostProduct, index) => (
@@ -185,11 +194,12 @@ const AddFoodcost = () => {
               />
             )}
             {!selectedProduct && (
+              // @ts-expect-error - searchPlaceHolder is not in the types
               <SelectDropdown
                 search
                 onSelect={(item) => handleSelectPress(item)}
                 searchPlaceHolder="Search"
-                defaultButtonText={foodcost && foodcost.length > 0 ? 'Add more...' : 'Add product...'}
+                defaultButtonText={foodcostProducts.length > 0 ? 'Add more...' : 'Add product...'}
                 data={products.map((product) => ({ ...product }))}
                 buttonTextAfterSelection={(selectedItem) => selectedItem.name}
                 rowTextForSelection={(item) => item.name}
@@ -201,32 +211,8 @@ const AddFoodcost = () => {
               />
             )}
           </S.ProductsWrapper>
-
-          {/* <S.WeightAndUnitInputsWrapper>
-            <S.NumericalInputWrapper>
-              <S.InputLabel>Weight:</S.InputLabel>
-              <S.Input value={weight} onChangeText={(text) => setWeight(text)} keyboardType="numeric" />
-            </S.NumericalInputWrapper>
-            <S.PickerInputWrapper>
-              <RNPickerSelect
-                value={unit}
-                style={{
-                  inputIOS: {
-                    fontFamily: 'dmSerif',
-                    color: '#597E52'
-                  }
-                }}
-                items={UNITS}
-                onValueChange={setUnit}
-              />
-            </S.PickerInputWrapper>
-          </S.WeightAndUnitInputsWrapper>
-          <S.PriceInputWrapper>
-            <S.InputLabel>Price:</S.InputLabel>
-            <S.Input value={price} onChangeText={(text) => setPrice(text)} keyboardType="numeric" />
-            <S.PriceLabel>zł</S.PriceLabel>
-          </S.PriceInputWrapper> */}
         </ScrollView>
+
         <S.PageFooter>
           {foodcost ? (
             <S.PageFooterTopRow>
@@ -244,23 +230,6 @@ const AddFoodcost = () => {
         </S.PageFooter>
       </Common.PageWrapper>
     </ScreenLayout>
-  )
-}
-
-const ProductRow = ({ name, unit, weight, price, index }) => {
-  return (
-    <S.ProductRowWrapper>
-      <S.ProductRowLeftColumn>
-        <S.SelectedProductRowNumber>{index}.</S.SelectedProductRowNumber>
-        <S.ProductRowTitle>
-          {capitalizeFirstLetter(name)} - {weight} {unit}
-        </S.ProductRowTitle>
-      </S.ProductRowLeftColumn>
-      <S.ProductRowRightColumn>
-        <S.ProductRowPrice>{formatPrice(price)} zł</S.ProductRowPrice>
-        <IconButton icon={faPenToSquare} />
-      </S.ProductRowRightColumn>
-    </S.ProductRowWrapper>
   )
 }
 
@@ -375,6 +344,13 @@ const S = {
     height: 15%;
     justify-content: flex-end;
   `,
+  FlexWrapper: styled.View<{ flex?: number }>`
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+    flex: ${(p) => p.flex || 1};
+    align-items: center;
+  `,
   PageFooterTopRow: styled.View`
     display: flex;
     flex-direction: row;
@@ -400,40 +376,6 @@ const S = {
   `,
   PageFooterTextRight: styled.Text`
     font-size: 30px;
-    font-family: dmSerif;
-    color: ${(p) => p.theme.dimmed};
-  `,
-  ProductRowWrapper: styled.View`
-    display: flex;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding: 8px 12px;
-  `,
-  ProductRowLeftColumn: styled.View`
-    flex: 1;
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    align-items: center;
-  `,
-  ProductRowRightColumn: styled.View`
-    flex: 1;
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    align-items: center;
-    justify-content: flex-end;
-  `,
-  ProductRowTitle: styled.Text`
-    font-size: 22px;
-    font-family: dmSerif;
-    color: ${(p) => p.theme.dimmed};
-  `,
-  ProductRowPrice: styled.Text`
-    font-size: 28px;
     font-family: dmSerif;
     color: ${(p) => p.theme.dimmed};
   `,
@@ -518,12 +460,11 @@ const S = {
     width: 60%;
     font-size: 20px;
   `,
-  NameInputWrapper: styled.View`
+  LabelAndInputWrapper: styled.View`
     display: flex;
     align-items: center;
     width: 100%;
     flex-direction: row;
-    font-family: dmSerif;
   `,
   PriceInputWrapper: styled.View`
     display: flex;
