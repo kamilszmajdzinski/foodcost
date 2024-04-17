@@ -47,4 +47,25 @@ async function addFoodCostWithProducts(foodCost: AddFoodcostDTO, onSuccess: () =
   console.log('Food cost and products added successfully')
 }
 
-export { addFoodCostWithProducts }
+async function deleteFoodCost(foodCostId: string, onSuccess: () => void) {
+  // First, delete associated products in the recipe_products table
+  const { error: deleteProductsError } = await supabase.from('recipe_products').delete().match({ recipe_id: foodCostId })
+
+  if (deleteProductsError) {
+    console.error('Error deleting associated products:', deleteProductsError)
+    return
+  }
+
+  // Then, delete the recipe itself
+  const { error: deleteRecipeError } = await supabase.from('recipes').delete().match({ id: foodCostId })
+
+  if (deleteRecipeError) {
+    console.error('Error deleting recipe:', deleteRecipeError)
+    return
+  }
+
+  console.log('Food cost deleted successfully')
+  onSuccess && onSuccess()
+}
+
+export { addFoodCostWithProducts, deleteFoodCost }

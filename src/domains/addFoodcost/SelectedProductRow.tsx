@@ -21,6 +21,9 @@ interface SelectedProductRowProps {
   setFoodcostProducts: any
   index: number
   product_id: string
+  hideIndex?: boolean
+  hideButtons?: boolean
+  modalMode?: boolean
 }
 
 export const SelectedProductRow = ({
@@ -31,7 +34,10 @@ export const SelectedProductRow = ({
   setSelectedProduct,
   setFoodcostProducts,
   index,
-  product_id
+  hideIndex = false,
+  hideButtons = false,
+  product_id,
+  modalMode = false
 }: SelectedProductRowProps) => {
   const handleConfirmProduct = () => {
     setFoodcostProducts((prev: FoodcostProduct[]) => [...prev, { name, unit, weight, price, id: product_id }])
@@ -57,16 +63,18 @@ export const SelectedProductRow = ({
   return (
     <SelectedProductRowStyles.Wrapper>
       <SelectedProductRowStyles.LeftColumn>
-        <Typography size={22} color={appTheme.dimmed}>
-          {index}.
-        </Typography>
+        {!modalMode && (
+          <Typography size={22} color={appTheme.dimmed}>
+            {index}.
+          </Typography>
+        )}
 
         <SelectedProductRowStyles.LeftColumnContent>
-          <Typography size={22} color={appTheme.dimmed}>
+          <Typography size={modalMode ? 28 : 22} color={appTheme.dimmed}>
             {capitalizeFirstLetter(name)}{' '}
           </Typography>
           <SelectedProductRowStyles.LeftColumnInnerWrapper>
-            <SelectedProductRowStyles.WeightInput keyboardType="numeric" onChangeText={handleChangeWeight} value={weight.toString()} />
+            <SelectedProductRowStyles.WeightInput modalMode={modalMode} keyboardType="numeric" onChangeText={handleChangeWeight} value={weight.toString()} />
             <RNPickerSelect
               value={unit}
               style={ProductPickerStyles}
@@ -84,9 +92,13 @@ export const SelectedProductRow = ({
       </SelectedProductRowStyles.LeftColumn>
 
       <SelectedProductRowStyles.RightColumn>
-        <Typography size={26}>{formatPrice(price)} zł</Typography>
-        <IconButton icon={faCheck} onPress={handleConfirmProduct} />
-        <IconButton icon={faXmark} color="#780012" onPress={() => setSelectedProduct(null)} />
+        <Typography size={modalMode ? 30 : 26}>{formatPrice(price)} zł</Typography>
+        {!modalMode && (
+          <>
+            <IconButton icon={faCheck} onPress={handleConfirmProduct} />
+            <IconButton icon={faXmark} color="#780012" onPress={() => setSelectedProduct(null)} />{' '}
+          </>
+        )}
       </SelectedProductRowStyles.RightColumn>
     </SelectedProductRowStyles.Wrapper>
   )
@@ -108,6 +120,10 @@ const SelectedProductRowStyles = {
     align-items: center;
     border-radius: 8px;
     padding: 8px 12px;
+    //below styles are not used
+    margin-left: 6px;
+    margin-right: 6px;
+    border-radius: 20px;
   `,
   LeftColumn: styled.View`
     display: flex;
@@ -138,11 +154,11 @@ const SelectedProductRowStyles = {
     gap: 8px;
     align-items: center;
   `,
-  WeightInput: styled.TextInput`
+  WeightInput: styled.TextInput<{ modalMode?: boolean }>`
     height: 32px;
     padding: 6px 10px;
     border-radius: 8px;
-    background-color: ${(p) => p.theme.primary};
+    background-color: ${(p) => p.modalMode ? p.theme.primaryDimmed : p.theme.primary};
     font-family: dmSerif;
     width: 60%;
     font-size: 20px;

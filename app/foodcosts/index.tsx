@@ -55,7 +55,6 @@ const ProductsScreen = () => {
         <Stack.Screen options={{ title: 'Foodcosts' }} />
         <Common.PageHeader>My foodcosts</Common.PageHeader>
         {isError && <Error />}
-        {isLoading && <Spinner />}
         {foodcosts.length > 0 && (
           <S.ListWrapper>
             <FlatList
@@ -78,6 +77,7 @@ const ProductsScreen = () => {
             />
           </S.ListWrapper>
         )}
+        {isLoading ? <Spinner /> : foodcosts.length === 0 && <Common.PageDescription>You don't have any foodcosts yet</Common.PageDescription>}
         <AddButton href="/foodcosts/addFoodcost" />
       </Common.PageWrapper>
     </ScreenLayout>

@@ -7,6 +7,7 @@ import { dimensions, height, width } from 'src/utils/dimensions'
 export const appTheme = {
   background: '#FFFFEC',
   primary: '#F1E4C3',
+  primaryDimmed: '#FCEFCC',
   secondary: '#C6A969',
   highlight: '#597E52',
   dimmed: '#3A5235',

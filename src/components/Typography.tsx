@@ -6,10 +6,14 @@ interface TypographyProps {
   color?: string
   weight?: string
   family?: string
+  handlePress?: () => void
 }
 
-export const Typography = ({ size, color, weight, family, children }: PropsWithChildren<TypographyProps>) =>
-    <TypograpgyStyles.Wrapper size={size} color={color} weight={weight} family={family}>{children}</TypograpgyStyles.Wrapper>
+export const Typography = ({ size, color, weight, family, handlePress, children }: PropsWithChildren<TypographyProps>) => (
+  <TypograpgyStyles.Wrapper onPress={handlePress && handlePress} size={size} color={color} weight={weight} family={family}>
+    {children}
+  </TypograpgyStyles.Wrapper>
+)
 
 const TypograpgyStyles = {
   Wrapper: styled.Text<TypographyProps>`

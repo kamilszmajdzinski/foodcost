@@ -3,15 +3,16 @@ import { appTheme } from 'src/config/theme'
 export const SELECT_DROPDOWN_STYLES = {
   buttonStyle: {
     backgroundColor: 'transparent',
-    borderRadius: 24,
+    borderRadius: 32,
     width: 'auto',
+    marginTop: 30 
 
   },
   buttonTextStyle: {
     fontFamily: 'dmSerif',
     color: appTheme.dimmed,
     fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: 18,
     margin: 'auto'
   },
   searchInputStyle: {
@@ -20,7 +21,7 @@ export const SELECT_DROPDOWN_STYLES = {
   },
   dropdownStyle: {
     borderRadius: 8,
-    width: '90%',
+    width: '99%',
     backgroundColor: appTheme.primary
   },
   rowTextStyle: {

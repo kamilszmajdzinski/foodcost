@@ -22,9 +22,12 @@ export const ButtonStyles = {
     height: 100%;
     width: 100%;
   `,
-  ButtonIconWrapper: styled.TouchableOpacity`
+  ButtonIconWrapper: styled.TouchableOpacity<{ absolutePosition?: boolean; top?: number; right?: number }>`
     padding: 12px;
-    padding: 4px;
+    z-index: 100;
+    position: ${(p) => (p.absolutePosition ? 'absolute' : 'relative')};
+    top: ${(p) => (p.top ? p.top : 0)}px;
+    right: ${(p) => (p.right ? p.right : 0)}px;
   `
 }
 
@@ -43,7 +46,7 @@ export const Button = ({
   children: string
   onPress: () => void
   disabled: boolean
-  isLoading: boolean
+  isLoading?: boolean
 }) => (
   <ButtonStyles.Wrapper onPress={onPress} disabled={disabled} isGrayedOut={disabled}>
     {isLoading ? <LoadingSpinner /> : <ButtonStyles.Text>{children}</ButtonStyles.Text>}
@@ -55,15 +58,21 @@ export const IconButton = ({
   onPress,
   disabled,
   isLoading,
-  color
+  color,
+  absolutePosition,
+  top,
+  right
 }: {
   icon: IconProp
   onPress: () => void
   disabled?: boolean
   isLoading?: boolean
   color?: string
+  absolutePosition?: boolean
+  top?: number
+  right?: number
 }) => (
-  <ButtonStyles.ButtonIconWrapper onPress={onPress} disabled={disabled}>
+  <ButtonStyles.ButtonIconWrapper onPress={onPress} disabled={disabled} absolutePosition={absolutePosition} top={top} right={right}>
     {isLoading ? <LoadingSpinner /> : <ButtonStyles.ButtonIcon icon={icon} color={color} />}
   </ButtonStyles.ButtonIconWrapper>
 )

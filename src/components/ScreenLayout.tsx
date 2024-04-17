@@ -5,12 +5,17 @@ import useCacheAssets from 'src/hooks/useCacheAssets'
 interface Props {
   children: React.ReactNode
   testID?: string
+  isLoading?: boolean
 }
 
-export default function ScreenLayout({ children, testID }: Props) {
+export default function ScreenLayout({ children, isLoading, testID }: Props) {
   const areAssetsCached = useCacheAssets()
 
-  return <S.Wrapper testID={testID}>{areAssetsCached ? children : <Spinner />}</S.Wrapper>
+  if (isLoading === true) {
+    return <S.Wrapper><Spinner /></S.Wrapper>
+  }
+
+  return <S.Wrapper testID={testID}>{!isLoading || areAssetsCached ? children : <Spinner />}</S.Wrapper>
 }
 
 const S = {

@@ -1,7 +1,6 @@
 import { Stack } from 'expo-router'
 import { ScrollView } from 'react-native'
 import { useEffect, useState } from 'react'
-import SelectDropdown from 'react-native-select-dropdown'
 
 import { supabase } from 'src/utils/supabase'
 
@@ -12,7 +11,6 @@ import { Button } from 'src/components/Button/Button'
 import { Common } from 'src/styles/common'
 import { Product } from 'src/types/supabase'
 import { useIsFocused } from '@react-navigation/native'
-import { SELECT_DROPDOWN_STYLES } from 'src/styles/addFoodcostPage.styles'
 import { formatPrice } from 'src/utils/formatPrice'
 
 import { router } from 'expo-router'
@@ -23,6 +21,7 @@ import { mapStateToApi } from 'src/domains/addFoodcost/utils'
 import { addFoodCostWithProducts } from 'src/utils/api'
 import { Typography } from 'src/components/Typography'
 import { appTheme } from 'src/config/theme'
+import { AddProductModal } from 'src/components/AddProductModal'
 
 export type FoodcostProduct = {
   product_id: string
@@ -51,6 +50,8 @@ const AddFoodcost = () => {
   const [foodcost, setFoodcost] = useState<number | null>(null)
   const [servings, setServings] = useState<number | null>(null)
 
+  const [isModalVisible, setIsModalVisible] = useState(false)
+
   const isFocused = useIsFocused()
 
   const addFoodcost = async () => {
@@ -59,16 +60,15 @@ const AddFoodcost = () => {
     try {
       foodcost &&
         servings &&
-        await addFoodCostWithProducts(mapStateToApi(name, description, foodcostProducts, foodcost, servings), () => {
+        (await addFoodCostWithProducts(mapStateToApi(name, description, foodcostProducts, foodcost, servings), () => {
           router.back()
-        })
+        }))
     } catch {
       setIsError(true)
       setIsLoading(false)
     } finally {
       setIsLoading(false)
     }
-
   }
 
   useEffect(() => {
@@ -120,24 +120,34 @@ const AddFoodcost = () => {
           <Stack.Screen options={{ title: 'Add Foodcost' }} />
           <Common.PageHeader>Add Foodcost</Common.PageHeader>
 
+          <AddProductModal isVisible={isModalVisible} setIsVisible={setIsModalVisible} handleSelectProduct={handleSelectPress} products={products} />
+
           <S.LabelAndInputWrapper>
             <S.FlexWrapper flex={3}>
-              <Typography size={22} color={appTheme.dimmed}>Name:</Typography>
+              <Typography size={22} color={appTheme.dimmed}>
+                Name:
+              </Typography>
               <S.Input value={name} onChangeText={(text) => setName(text)} />
             </S.FlexWrapper>
 
             <S.FlexWrapper flex={2}>
-            <Typography size={22} color={appTheme.dimmed}>Servings:</Typography>
+              <Typography size={22} color={appTheme.dimmed}>
+                Servings:
+              </Typography>
               <S.Input keyboardType="numeric" value={servings?.toString()} onChangeText={(serving) => setServings(Number(serving))} />
             </S.FlexWrapper>
           </S.LabelAndInputWrapper>
 
           <S.LabelAndInputWrapper>
-          <Typography size={22} color={appTheme.dimmed}>Description:</Typography>
+            <Typography size={22} color={appTheme.dimmed}>
+              Description:
+            </Typography>
             <S.Input value={description} onChangeText={(text) => setDescription(text)} />
           </S.LabelAndInputWrapper>
           <S.ProductsWrapper>
-          <Typography size={30} color={appTheme.dimmed}>Products:</Typography>
+            <Typography size={30} color={appTheme.dimmed}>
+              Products:
+            </Typography>
             {foodcostProducts.map((foodcostProduct, index) => (
               <ProductRow key={foodcostProduct.product_id} {...foodcostProduct} index={index + 1} />
             ))}
@@ -150,21 +160,9 @@ const AddFoodcost = () => {
               />
             )}
             {!selectedProduct && (
-              // @ts-expect-error - searchPlaceHolder is not in the types
-              <SelectDropdown
-                search
-                onSelect={(item) => handleSelectPress(item)}
-                searchPlaceHolder="Search"
-                defaultButtonText={foodcostProducts.length > 0 ? 'Add more...' : 'Add product...'}
-                data={products.map((product) => ({ ...product }))}
-                buttonTextAfterSelection={(selectedItem) => selectedItem.name}
-                rowTextForSelection={(item) => item.name}
-                buttonStyle={SELECT_DROPDOWN_STYLES.buttonStyle}
-                buttonTextStyle={SELECT_DROPDOWN_STYLES.buttonTextStyle}
-                dropdownStyle={SELECT_DROPDOWN_STYLES.dropdownStyle}
-                rowTextStyle={SELECT_DROPDOWN_STYLES.rowTextStyle}
-                searchInputStyle={SELECT_DROPDOWN_STYLES.searchInputStyle}
-              />
+              <Typography size={24} handlePress={() => setIsModalVisible(true)}>
+                {foodcostProducts.length > 0 ? 'Add more...' : 'Add product...'}
+              </Typography>
             )}
           </S.ProductsWrapper>
         </ScrollView>
@@ -173,11 +171,14 @@ const AddFoodcost = () => {
           {foodcost ? (
             <S.PageFooterTopRow>
               <S.PageFooterLeftColumn>
-                <Typography size={26} color={appTheme.dimmed}>Foodcost:</Typography>
-                
+                <Typography size={26} color={appTheme.dimmed}>
+                  Foodcost:
+                </Typography>
               </S.PageFooterLeftColumn>
               <S.PageFooterRightColumn>
-                <Typography size={30} color={appTheme.dimmed}>{formatPrice(foodcost)} zł</Typography>
+                <Typography size={30} color={appTheme.dimmed}>
+                  {formatPrice(foodcost)} zł
+                </Typography>
               </S.PageFooterRightColumn>
             </S.PageFooterTopRow>
           ) : null}
@@ -191,6 +192,19 @@ const AddFoodcost = () => {
 }
 
 const S = {
+  ModalOuterWrapper: styled.View`
+    flex: 1;
+    justify-content: 'center';
+    align-items: 'center';
+    margin-top: 38%;
+    background-color: ${(p) => p.theme.primary};
+    border-radius: 20px;
+  `,
+  ModalInnerWrapper: styled.View`
+    background-color: 'white';
+    padding: 8px 4px;
+    align-items: 'center';
+  `,
   PageFooter: styled.View`
     display: flex;
     flex-direction: column;
