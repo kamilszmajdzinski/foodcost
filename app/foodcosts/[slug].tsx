@@ -1,6 +1,6 @@
 import { Stack, router } from 'expo-router'
 import ScreenLayout from 'src/components/ScreenLayout'
-import { FlatList, Alert, TextInput } from 'react-native'
+import { FlatList, Alert, TextInput, Platform } from 'react-native'
 import { useEffect, useState } from 'react'
 import { useIsFocused } from '@react-navigation/native'
 import styled from 'styled-components/native'
@@ -15,7 +15,7 @@ import { Common } from 'src/styles/common'
 
 import { FoodcostDTO, Product, ProductDTO } from 'src/types/supabase'
 import { formatPrice } from 'src/utils/formatPrice'
-import { Typography } from 'src/components/Typography'
+import { TextBackground, Typography } from 'src/components/Typography'
 import { IconButton } from 'src/components/Button/Button'
 import { deleteFoodCost } from 'src/utils/api'
 
@@ -54,6 +54,18 @@ const FoodcostScreen = () => {
   const { slug } = useLocalSearchParams()
 
   const isFocused = useIsFocused()
+
+  const [isScrolled, setIsScrolled] = useState(false)
+  const [isScrolledToBottom, setIsScrolledToBottom] = useState(false)
+
+  const handleScroll = (event) => {
+    const y = event.nativeEvent.contentOffset.y
+    const contentHeight = event.nativeEvent.contentSize.height
+    const viewHeight = event.nativeEvent.layoutMeasurement.height
+
+    setIsScrolled(y > 0)
+    setIsScrolledToBottom(y + viewHeight >= contentHeight)
+  }
 
   const getFoodcosts = async () => {
     setIsLoading(true)
@@ -160,6 +172,8 @@ const FoodcostScreen = () => {
     }
   }, [editMode, foodcostProducts])
 
+  console.log(isScrolled, isScrolledToBottom)
+
   return (
     <ScreenLayout isLoading={isLoading}>
       <Common.PageWrapper>
@@ -218,8 +232,10 @@ const FoodcostScreen = () => {
             ) : (
               <Common.PageDescription>{foodcost.recipe_description}</Common.PageDescription>
             )}
-            <S.ListWrapper>
+            <S.ListWrapper isScrolled={isScrolled} isScrolledToBottom={isScrolledToBottom}>
               <FlatList
+                onScroll={handleScroll}
+                scrollEventThrottle={16}
                 renderItem={(product: { item: ProductDTO }) => (
                   <S.ListElement
                     onTouchEnd={(e) =>
@@ -295,12 +311,32 @@ const FoodcostScreen = () => {
 }
 
 const S = {
-  ListWrapper: styled.View`
+  ListWrapper: styled.View<{ isScrolled; isScrolledToBottom }>`
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-top: 24px;
-    padding-bottom: 36px;
+    margin-top: 12px;
+    margin-bottom: 72px;
+
+    background-color: ${(p) => p.theme.background};
+
+    ${(props) =>
+      props.isScrolled &&
+      `
+      border-top-width: 1px;
+    border-top-color: red;
+
+     `}
+    ${(props) =>
+      props.isScrolledToBottom &&
+      `
+    border-bottom-width: 1px;
+    border-bottom-color: red;
+  `}
+  ${Platform.OS === 'android' &&
+    `
+    elevation: 10;
+  `}
   `,
   FoodcostNameInput: styled.TextInput`
     font-size: 48px;
@@ -384,17 +420,19 @@ const S = {
 
   InnerPageWrapper: styled.View`
     flex: 1;
+    border-bottom: 1px solid red;
   `,
   PageFooterWrapper: styled.View`
     display: flex;
     flex-direction: column;
     gap: 8px;
+    background-color: ${(p) => p.theme.background};
   `,
   PageFooterRow: styled.View`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: center;
   `,
   HeaderIconsWrapper: styled.View`
     display: flex;

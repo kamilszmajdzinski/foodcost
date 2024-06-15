@@ -8,7 +8,7 @@ interface Props {
   isLoading?: boolean
 }
 
-export default function ScreenLayout({ children, isLoading, testID }: Props) {
+export default function ScreenLayout({ children, isLoading = false, testID }: Props) {
   const areAssetsCached = useCacheAssets()
 
   if (isLoading === true) {
