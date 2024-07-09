@@ -8,7 +8,7 @@ import { formatPrice } from 'src/utils/formatPrice'
 import { Typography } from 'src/components/Typography'
 import { appTheme } from 'src/config/theme'
 import { capitalizeFirstLetter } from 'src/utils/capitalizeFirstLetter'
-import { calculatePriceOnWeightChange, calculateWeightOnUnitChange } from './utils'
+import { calculatePriceOnWeightChange, calculateWeightOnUnitChange, findAllElementsOfSameTypeByValue } from './utils'
 import { UNITS } from 'src/consts'
 import { FoodcostProduct } from 'app/foodcosts/addFoodcost'
 
@@ -60,6 +60,8 @@ export const SelectedProductRow = ({
     }
   }
 
+  console.log(unit)
+
   return (
     <SelectedProductRowStyles.Wrapper>
       <SelectedProductRowStyles.LeftColumn>
@@ -74,11 +76,16 @@ export const SelectedProductRow = ({
             {capitalizeFirstLetter(name)}{' '}
           </Typography>
           <SelectedProductRowStyles.LeftColumnInnerWrapper>
-            <SelectedProductRowStyles.WeightInput modalMode={modalMode} keyboardType="numeric" onChangeText={handleChangeWeight} value={weight.toString()} />
+            <SelectedProductRowStyles.WeightInput
+              modalMode={modalMode}
+              keyboardType="numeric"
+              onChangeText={handleChangeWeight}
+              value={weight.toString()}
+            />
             <RNPickerSelect
               value={unit}
               style={ProductPickerStyles}
-              items={UNITS}
+              items={findAllElementsOfSameTypeByValue(unit)}
               onValueChange={(unit) =>
                 setSelectedProduct((prev: FoodcostProduct) => ({
                   ...prev,
@@ -96,7 +103,7 @@ export const SelectedProductRow = ({
         {!modalMode && (
           <>
             <IconButton icon={faCheck} onPress={handleConfirmProduct} />
-            <IconButton icon={faXmark} color="#780012" onPress={() => setSelectedProduct(null)} />{' '}
+            <IconButton icon={faXmark} color="#780012" onPress={() => setSelectedProduct(null)} />
           </>
         )}
       </SelectedProductRowStyles.RightColumn>
@@ -136,7 +143,7 @@ const SelectedProductRowStyles = {
     flex: 1;
     display: flex;
     flex-direction: row;
-    gap: 6px;
+    gap: 3px;
     justify-content: flex-end;
     align-items: center;
   `,
@@ -158,7 +165,7 @@ const SelectedProductRowStyles = {
     height: 32px;
     padding: 6px 10px;
     border-radius: 8px;
-    background-color: ${(p) => p.modalMode ? p.theme.primaryDimmed : p.theme.primary};
+    background-color: ${(p) => (p.modalMode ? p.theme.primaryDimmed : p.theme.primary)};
     font-family: dmSerif;
     width: 60%;
     font-size: 20px;

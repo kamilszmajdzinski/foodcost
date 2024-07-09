@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/bin/node /usr/local/bin/yarn install expo@latest
+  /usr/local/bin/node /usr/local/bin/yarn add expo@latest
 
 PATH: 
   /opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Library/Apple/usr/bin:/usr/local/share/dotnet:~/.dotnet/tools:/Library/Frameworks/Mono.framework/Versions/Current/Commands
@@ -14,15 +14,7 @@ Platform:
   darwin arm64
 
 Trace: 
-  Error: Failed to replace env in config: ${GH_TOKEN}
-      at /usr/local/lib/node_modules/yarn/lib/cli.js:94933:13
-      at String.replace (<anonymous>)
-      at envReplace (/usr/local/lib/node_modules/yarn/lib/cli.js:94928:16)
-      at Function.normalizeConfig (/usr/local/lib/node_modules/yarn/lib/cli.js:31938:69)
-      at NpmRegistry.<anonymous> (/usr/local/lib/node_modules/yarn/lib/cli.js:31968:34)
-      at Generator.next (<anonymous>)
-      at step (/usr/local/lib/node_modules/yarn/lib/cli.js:310:30)
-      at /usr/local/lib/node_modules/yarn/lib/cli.js:321:13
+  Error: EACCES: permission denied, mkdir '/Users/kamilszmajdzinski/Projects/fc2/foodcost/node_modules/@babel/plugin-proposal-logical-assignment-operators'
 
 npm manifest: 
   {

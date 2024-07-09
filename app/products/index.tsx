@@ -1,4 +1,4 @@
-import { Stack } from 'expo-router'
+import { router, Stack } from 'expo-router'
 import ScreenLayout from 'src/components/ScreenLayout'
 import { FlatList } from 'react-native'
 import { useEffect, useState } from 'react'
@@ -22,7 +22,6 @@ const ProductsScreen = () => {
   const [isError, setIsError] = useState(false)
   const [products, setProducts] = useState<Product[]>([])
 
-  console.log(products)
   const isFocused = useIsFocused()
 
   const getProducts = async () => {
@@ -57,7 +56,7 @@ const ProductsScreen = () => {
           <S.ListWrapper>
             <FlatList
               renderItem={(product) => (
-                <S.ListElement>
+                <S.ListElement onPress={() => router.push(`/products/${product.item.id}`)}>
                   <S.ListText>{capitalizeFirstLetter(product.item.name)}</S.ListText>
                   <S.ListDetails>
                     {formatPrice(product.item.price)}zł/{product.item.unit}
@@ -83,7 +82,7 @@ const S = {
     margin-top: 24px;
     padding-bottom: 36px;
   `,
-  ListElement: styled.View`
+  ListElement: styled.TouchableOpacity`
     background-color: ${(p) => p.theme.primary};
     padding: 8px;
     border-radius: 16px;

@@ -40,3 +40,81 @@ export const Common = {
     color: ${(p) => p.theme.dimmed};
   `
 }
+
+export const CommonForm = {
+  NameInputWrapper: styled.View`
+    display: flex;
+    align-items: center;
+    width: 100%;
+    flex-direction: row;
+    font-family: dmSerif;
+  `,
+  Input: styled.TextInput`
+    height: 48px;
+    margin: 12px;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: ${(p) => p.theme.primary};
+    flex: 1;
+    font-family: dmSerif;
+    font-size: 20px;
+  `,
+  InputLabel: styled.Text`
+    font-size: 22px;
+    font-family: dmSerif;
+    color: ${(p) => p.theme.highlight};
+    width: 65px;
+  `,
+  PickerInputWrapper: styled.View`
+    width: 25%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  `,
+  NumericalInputWrapper: styled.View`
+    width: 75%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  `,
+  WeightAndUnitInputsWrapper: styled.View`
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  `,
+  PriceInputWrapper: styled.View`
+    display: flex;
+    align-items: center;
+    width: 95%;
+    flex-direction: row;
+    font-family: dmSerif;
+  `,
+  PriceLabel: styled.Text`
+    font-size: 16px;
+    font-family: dmSerif;
+    color: ${(p) => p.theme.highlight};
+  `
+}
+
+type FlexProps = {
+  direction?: 'row' | 'column'
+  gap?: number
+  alignItems?: 'center' | 'start' | 'end' | 'space-between'
+  justifyContent?: 'center' | 'start' | 'end' | 'space-between'
+  height?: number
+}
+
+export const CommonLayout = {
+  Flex: styled.View<FlexProps>`
+    display: flex;
+    width: 100%;
+    flex-direction: ${(p) => p.direction || 'row'};
+    gap: ${(p) => p.gap || 2}px;
+    align-items: ${(p) => p.alignItems || 'center'};
+    justify-content: ${(p) => p.justifyContent || 'center'};
+    height: ${(p) => `${p.height}%` || 'auto'};
+  `
+}

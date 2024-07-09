@@ -1,7 +1,8 @@
 export const UNITS = [
-  { value: 'g', label: 'Grams' },
-  { value: 'kg', label: 'Kilograms' },
-  { value: 'mg', label: 'Miligrams' },
-  { value: 'l', label: 'Liters' },
-  { value: 'ml', label: 'Mililiters' }
+  { value: 'g', label: 'Gr', type: 'weight' },
+  { value: 'kg', label: 'Kg', type: 'weight' },
+  { value: 'mg', label: 'Mg', type: 'weight' },
+  { value: 'l', label: 'L', type: 'volume'},
+  { value: 'ml', label: 'Ml', type: 'volume' },
+  { value: 'pcs', label: 'pcs', type: 'pieces'}
 ]

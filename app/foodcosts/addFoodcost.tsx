@@ -22,6 +22,7 @@ import { addFoodCostWithProducts } from 'src/utils/api'
 import { Typography } from 'src/components/Typography'
 import { appTheme } from 'src/config/theme'
 import { AddProductModal } from 'src/components/AddProductModal'
+import { PageFooter } from 'src/components/PageFooter'
 
 export type FoodcostProduct = {
   product_id: string
@@ -169,18 +170,7 @@ const AddFoodcost = () => {
 
         <S.PageFooter>
           {foodcost ? (
-            <S.PageFooterTopRow>
-              <S.PageFooterLeftColumn>
-                <Typography size={26} color={appTheme.dimmed}>
-                  Foodcost:
-                </Typography>
-              </S.PageFooterLeftColumn>
-              <S.PageFooterRightColumn>
-                <Typography size={30} color={appTheme.dimmed}>
-                  {formatPrice(foodcost)} zł
-                </Typography>
-              </S.PageFooterRightColumn>
-            </S.PageFooterTopRow>
+            <PageFooter title='Foodcost' price={foodcost} />
           ) : null}
           <Button disabled={!submitEnabled || isLoading} onPress={addFoodcost} isLoading={isLoading}>
             {isError ? 'Something went wrong, try again' : 'Add Foodcost'}
@@ -217,24 +207,6 @@ const S = {
     flex-direction: row;
     gap: 2px;
     flex: ${(p) => p.flex || 1};
-    align-items: center;
-  `,
-  PageFooterTopRow: styled.View`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    height: 40px;
-  `,
-  PageFooterLeftColumn: styled.View`
-    flex: 1;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-  `,
-  PageFooterRightColumn: styled.View`
-    flex: 1;
-    justify-content: flex-end;
-    flex-direction: row;
     align-items: center;
   `,
   ProductsWrapper: styled.View`

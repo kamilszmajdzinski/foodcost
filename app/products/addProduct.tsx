@@ -7,11 +7,10 @@ import { supabase } from 'src/utils/supabase'
 import { mapFormToApi } from 'src/utils/mapFormToApi'
 
 import ScreenLayout from 'src/components/ScreenLayout'
-import styled from 'styled-components/native'
 import { Button } from 'src/components/Button/Button'
 import { UNITS } from 'src/consts'
 
-import { Common } from 'src/styles/common'
+import { Common, CommonForm } from 'src/styles/common'
 
 const AddProduct = () => {
   const [isLoading, setIsLoading] = useState(false)
@@ -52,16 +51,16 @@ const AddProduct = () => {
           <Stack.Screen options={{ title: 'Add Product' }} />
           <Common.PageHeader>Add Product</Common.PageHeader>
 
-          <S.NameInputWrapper>
-            <S.InputLabel>Name:</S.InputLabel>
-            <S.Input value={name} onChangeText={(text) => setName(text)} />
-          </S.NameInputWrapper>
-          <S.WeightAndUnitInputsWrapper>
-            <S.NumericalInputWrapper>
-              <S.InputLabel>Weight:</S.InputLabel>
-              <S.Input value={weight} onChangeText={(text) => setWeight(text)} keyboardType="numeric" />
-            </S.NumericalInputWrapper>
-            <S.PickerInputWrapper>
+          <CommonForm.NameInputWrapper>
+            <CommonForm.InputLabel>Name:</CommonForm.InputLabel>
+            <CommonForm.Input value={name} onChangeText={(text) => setName(text)} />
+          </CommonForm.NameInputWrapper>
+          <CommonForm.WeightAndUnitInputsWrapper>
+            <CommonForm.NumericalInputWrapper>
+              <CommonForm.InputLabel>Weight:</CommonForm.InputLabel>
+              <CommonForm.Input value={weight} onChangeText={(text) => setWeight(text)} keyboardType="numeric" />
+            </CommonForm.NumericalInputWrapper>
+            <CommonForm.PickerInputWrapper>
               <RNPickerSelect
                 value={unit}
                 style={{
@@ -73,13 +72,13 @@ const AddProduct = () => {
                 items={UNITS}
                 onValueChange={setUnit}
               />
-            </S.PickerInputWrapper>
-          </S.WeightAndUnitInputsWrapper>
-          <S.PriceInputWrapper>
-            <S.InputLabel>Price:</S.InputLabel>
-            <S.Input value={price} onChangeText={(text) => setPrice(text)} keyboardType="numeric" />
-            <S.PriceLabel>zł</S.PriceLabel>
-          </S.PriceInputWrapper>
+            </CommonForm.PickerInputWrapper>
+          </CommonForm.WeightAndUnitInputsWrapper>
+          <CommonForm.PriceInputWrapper>
+            <CommonForm.InputLabel>Price:</CommonForm.InputLabel>
+            <CommonForm.Input value={price} onChangeText={(text) => setPrice(text)} keyboardType="numeric" />
+            <CommonForm.PriceLabel>zł</CommonForm.PriceLabel>
+          </CommonForm.PriceInputWrapper>
         </ScrollView>
 
         <Button disabled={!submitEnabled} onPress={addProduct} isLoading={isLoading}>
@@ -88,67 +87,6 @@ const AddProduct = () => {
       </Common.PageWrapper>
     </ScreenLayout>
   )
-}
-
-const S = {
-  UnitSelect: styled(RNPickerSelect)`
-    padding: 40px;
-  `,
-  Input: styled.TextInput`
-    height: 48px;
-    margin: 12px;
-    padding: 10px;
-    border-radius: 8px;
-    background-color: ${(p) => p.theme.primary};
-    flex: 1;
-    font-family: dmSerif;
-    font-size: 20px;
-  `,
-  NameInputWrapper: styled.View`
-    display: flex;
-    align-items: center;
-    width: 100%;
-    flex-direction: row;
-    font-family: dmSerif;
-  `,
-  PriceInputWrapper: styled.View`
-    display: flex;
-    align-items: center;
-    width: 95%;
-    flex-direction: row;
-    font-family: dmSerif;
-  `,
-  WeightAndUnitInputsWrapper: styled.View`
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-  `,
-  NumericalInputWrapper: styled.View`
-    width: 75%;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-  `,
-  PickerInputWrapper: styled.View`
-    width: 25%;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-  `,
-  InputLabel: styled.Text`
-    font-size: 22px;
-    font-family: dmSerif;
-    color: ${(p) => p.theme.highlight};
-    width: 65px;
-  `,
-  PriceLabel: styled.Text`
-    font-size: 16px;
-    font-family: dmSerif;
-    color: ${(p) => p.theme.highlight};
-  `
 }
 
 export default AddProduct

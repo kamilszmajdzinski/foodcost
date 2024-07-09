@@ -46,11 +46,10 @@ export const EditFoodcostProductModal = ({
   const handleSave = () => {
     if (selectedProduct) {
       if (isEdit) {
-        console.log('selected', selectedProduct)
         setFoodcostProducts((prev) => {
           const newProducts = prev.map((product) => {
             if (product.product_id === Number(selectedProduct.product_id)) {
-              return ({
+              return {
                 product_id: Number(selectedProduct.product_id),
                 product_name: selectedProduct.name,
                 unit: selectedProduct.unit,
@@ -58,11 +57,11 @@ export const EditFoodcostProductModal = ({
                 price: selectedProduct.price,
                 base_price: selectedProduct.basePrice,
                 base_unit: selectedProduct.baseUnit
-              })
+              }
             }
             return product
           })
-          return newProducts;
+          return newProducts
         })
       } else {
         setFoodcostProducts((prev) => [

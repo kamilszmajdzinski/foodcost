@@ -10,6 +10,7 @@ export const ButtonStyles = {
     padding: 12px;
     background-color: ${(p) => p.theme.highlight};
     opacity: ${(p) => (p.isGrayedOut ? 0.5 : 1)};
+    width: 100%;
   `,
   Text: styled.Text`
     font-family: dmSerif;

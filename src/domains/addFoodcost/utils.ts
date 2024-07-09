@@ -1,16 +1,20 @@
 import { FoodcostProduct } from 'app/foodcosts/addFoodcost'
+import { UNITS } from 'src/consts'
 import { AddFoodcostDTO } from 'src/types/supabase'
 
-const UNITS_PRICE_RELATION_MAP = {
+export const UNITS_PRICE_RELATION_MAP = {
   'g/kg': 1000,
   'g/mg': 0.001,
   'mg/kg': 1000000,
   'mg/g': 1000,
   'kg/g': 0.001,
-  'kg/mg': 0.000001
+  'kg/mg': 0.000001,
+  'ml/l': 1000,
+  'l/ml': 0.001,
+  'pcs/pcs': 1
 }
 
-const UNITS_WEIGHT_RELATION_MAP = {
+export const UNITS_WEIGHT_RELATION_MAP = {
   'g/kg': 0.001,
   'g/mg': 1000,
   'mg/kg': 0.000001,
@@ -19,7 +23,10 @@ const UNITS_WEIGHT_RELATION_MAP = {
   'kg/mg': 1000000,
   'mg/mg': 1,
   'g/g': 1,
-  'kg/kg': 1
+  'kg/kg': 1,
+  'l/ml': 1000,
+  'ml/l': 0.001,
+  'pcs/pcs': 1
 }
 
 // TODO: add unit tests
@@ -39,6 +46,20 @@ export const calculatePriceOnWeightChange = (product: FoodcostProduct, unit: str
     const relation = UNITS_PRICE_RELATION_MAP[`${product.baseUnit}/${unit}`]
     return product.basePrice * weight * relation
   }
+}
+
+export const findAllElementsOfSameTypeByValue = (value: string) => {
+  const element = UNITS.find((unit) => unit.value === value)
+
+  if (!element) {
+    return []
+  }
+
+  const { type } = element
+
+  const sameTypeElements = UNITS.filter((unit) => unit.type === type)
+
+  return sameTypeElements
 }
 
 export const mapStateToApi = (
